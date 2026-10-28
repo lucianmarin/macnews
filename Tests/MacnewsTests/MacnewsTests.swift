@@ -223,6 +223,9 @@ struct MacnewsTests {
     func testViewsAndAppIconRender() throws {
         let pngData = try #require(AppIcon.renderPNGData(pixelSize: 256))
         #expect(!pngData.isEmpty)
+        if let iconsetPath = ProcessInfo.processInfo.environment["GENERATE_APP_ICONSET"] {
+            try AppIcon.writeIconset(to: URL(fileURLWithPath: iconsetPath))
+        }
         let iconImage = AppIcon.loadOrRenderImage()
         #expect(iconImage.size.width > 0)
 

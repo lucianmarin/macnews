@@ -15,7 +15,7 @@ Native macOS client for [Hotnews](https://news.lucianmarin.com) (`news.lucianmar
 - [x] **macOS App Scaffolding & Icon**:
   - [x] Swift Package (`Package.swift`) targeting macOS 14+ with `Macnews` executable and `MacnewsTests` test suite.
   - [x] `Makefile` to build and bundle `Hotnews.app` with `AppIcon.icns`.
-  - [x] Programmatic `AppIcon` renderer matching Hotnews's 5 warm vertical stripes (`#FCB13B`, `#F8941E`, `#F25A23`, `#EE2324`, `#C2272D`) inside a macOS squircle.
+  - [x] Programmatic `AppIcon` renderer matching `icon.svg`'s 5 warm vertical stripes (`#FBB03B`, `#F7931E`, `#F15A24`, `#ED1C24`, `#C1272D`) inside a macOS squircle.
 - [x] **Data Layer (`Models`, `APIClient`, `AppState`)**:
   - [x] `NewsEntry` and `PaginatedNewsResponse` Codable models with relative age (`shortdate`), truncated summary (`480` chars), and degree score (`round(score * 1000)`).
   - [x] Async/await `APIClient` fetching `/api/hot`, `/api/cold`, `/api/new`, and `/api/{site}` from `https://news.lucianmarin.com` (configurable for local development).

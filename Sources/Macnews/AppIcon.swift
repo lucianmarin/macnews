@@ -3,14 +3,14 @@ import AppKit
 import CoreGraphics
 
 public enum AppIcon {
-    /// Exact 5 warm vertical stripes from Hotnews `/static/192.png`:
-    /// `#FCB13B`, `#F8941E`, `#F25A23`, `#EE2324`, `#C2272D`
+    /// Exact 5 vertical stripes from `icon.svg` (`viewBox="0 0 180 180"`, five 36×180 rects):
+    /// `#FBB03B`, `#F7931E`, `#F15A24`, `#ED1C24`, `#C1272D`
     public static let stripeRGBs: [(r: CGFloat, g: CGFloat, b: CGFloat)] = [
-        (0xFC / 255.0, 0xB1 / 255.0, 0x3B / 255.0),
-        (0xF8 / 255.0, 0x94 / 255.0, 0x1E / 255.0),
-        (0xF2 / 255.0, 0x5A / 255.0, 0x23 / 255.0),
-        (0xEE / 255.0, 0x23 / 255.0, 0x24 / 255.0),
-        (0xC2 / 255.0, 0x27 / 255.0, 0x2D / 255.0)
+        (0xFB / 255.0, 0xB0 / 255.0, 0x3B / 255.0),
+        (0xF7 / 255.0, 0x93 / 255.0, 0x1E / 255.0),
+        (0xF1 / 255.0, 0x5A / 255.0, 0x24 / 255.0),
+        (0xED / 255.0, 0x1C / 255.0, 0x24 / 255.0),
+        (0xC1 / 255.0, 0x27 / 255.0, 0x2D / 255.0)
     ]
 
     public static func renderPNGData(pixelSize: Int) -> Data? {
@@ -86,6 +86,10 @@ public enum AppIcon {
         let scale = size / 1024.0
 
         ctx.saveGState()
+        ctx.setAllowsAntialiasing(true)
+        ctx.setShouldAntialias(true)
+        ctx.interpolationQuality = .high
+        // Flip vertically so (0, 0) is top-left matching `icon.svg` coordinates
         ctx.translateBy(x: 0, y: size)
         ctx.scaleBy(x: scale, y: -scale)
 
@@ -116,18 +120,19 @@ public enum AppIcon {
         ctx.fillPath()
         ctx.restoreGState()
 
-        // Clip to squircle and draw 5 vertical stripes
+        // Clip to squircle and map 180x180 `icon.svg` viewBox into 824x824 squircle
         ctx.saveGState()
         ctx.addPath(squirclePath)
         ctx.clip()
 
-        let stripeCount = CGFloat(stripeRGBs.count)
-        let stripeWidth = iconRect.width / stripeCount
+        ctx.translateBy(x: iconRect.minX, y: iconRect.minY)
+        let svgScale: CGFloat = 824.0 / 180.0
+        ctx.scaleBy(x: svgScale, y: svgScale)
+
         for (index, rgb) in stripeRGBs.enumerated() {
-            let x = iconRect.minX + (CGFloat(index) * stripeWidth)
-            // Extend width by 1pt on non-final stripes to prevent subpixel seams
-            let width = index == stripeRGBs.count - 1 ? stripeWidth : stripeWidth + 1.0
-            let rect = CGRect(x: x, y: iconRect.minY, width: width, height: iconRect.height)
+            let x = CGFloat(index) * 36.0
+            let width: CGFloat = index == stripeRGBs.count - 1 ? 36.0 : 36.5
+            let rect = CGRect(x: x, y: 0, width: width, height: 180.0)
             ctx.setFillColor(CGColor(srgbRed: rgb.r, green: rgb.g, blue: rgb.b, alpha: 1.0))
             ctx.fill(rect)
         }
