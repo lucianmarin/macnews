@@ -1,5 +1,7 @@
 # Macnews
 
+![screenshot](screenshot.jpg)
+
 Native macOS client for [Hotnews](https://news.lucianmarin.com) (`news.lucianmarin.com/api`), built with SwiftUI and Swift Package Manager. It brings the clean, distraction-free reading experience of the Hotnews web application to macOS with a unified toolbar featuring **3 segmented tabs** (**Hottest**, **Coldest**, **Newest**), **infinite scroll**, **alternating odd/even row highlighting**, and the signature **red-orange (`#FF4500`)** accent color.
 
 ---
