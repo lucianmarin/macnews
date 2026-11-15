@@ -14,6 +14,12 @@ Native macOS client for [Hotnews](https://news.lucianmarin.com) (`news.lucianmar
   - [x] `GET /api/cold` — Paginated coldest news feed (`?p=1`, ordered by `score, pub`, 1 per domain).
   - [x] `GET /api/new` — Paginated newest news feed (`?p=1`, ordered by `-pub`, 1 per domain).
   - [x] `GET /api/{site}` — Paginated site-specific news feed (`?p=1`, ordered by `-score, pub`).
+- [x] **macOS Widget (`HotnewsWidget`)**:
+  - [x] Embedded `HotnewsWidget.appex` (`com.apple.widgetkit-extension`) in `Hotnews.app/Contents/PlugIns/`.
+  - [x] Supports 3 widget sizes: **Small** (`.systemSmall`), **Medium** (`.systemMedium`), and **Large** (`.systemLarge`).
+  - [x] Fetches only the **Hottest** feed (`/api/hot`) via `HotnewsTimelineProvider`.
+  - [x] Displays the status line (`site`, `age ago`, `score°` in `#FF4500`) and article title below without description, dynamically fitting as many stories as fit in Small, Medium, and Large sizes.
+  - [x] Deep-links widget story clicks back into `Hotnews.app` via `hotnews://open?url=...`.
 - [x] **macOS App Scaffolding & Icon**:
   - [x] Swift Package (`Package.swift`) targeting macOS 14+ with `Macnews` executable and `MacnewsTests` test suite.
   - [x] `Makefile` to build and bundle `Hotnews.app` with `AppIcon.icns`.

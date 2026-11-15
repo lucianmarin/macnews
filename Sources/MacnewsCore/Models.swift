@@ -228,3 +228,44 @@ public struct PaginatedNewsResponse: Codable, Equatable, Sendable {
         page < pages && !entries.isEmpty
     }
 }
+
+public enum WidgetDeepLink {
+    public static let scheme = "hotnews"
+    public static let openHost = "open"
+
+    public static func makeArticleURL(for entry: NewsEntry) -> URL? {
+        guard let targetURL = URL(string: entry.url),
+              let scheme = targetURL.scheme?.lowercased(),
+              scheme == "http" || scheme == "https" else {
+            return nil
+        }
+        var components = URLComponents()
+        components.scheme = self.scheme
+        components.host = openHost
+        var items = [URLQueryItem(name: "url", value: targetURL.absoluteString)]
+        let site = entry.siteLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !site.isEmpty {
+            items.append(URLQueryItem(name: "site", value: site))
+        }
+        components.queryItems = items
+        return components.url
+    }
+
+    public static func parseArticleURL(from url: URL) -> (articleURL: URL, site: String?)? {
+        if url.scheme?.lowercased() == scheme, url.host?.lowercased() == openHost {
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                  let rawTarget = components.queryItems?.first(where: { $0.name == "url" })?.value,
+                  let targetURL = URL(string: rawTarget),
+                  let targetScheme = targetURL.scheme?.lowercased(),
+                  targetScheme == "http" || targetScheme == "https" else {
+                return nil
+            }
+            let site = components.queryItems?.first(where: { $0.name == "site" })?.value
+            return (targetURL, site)
+        }
+        if let s = url.scheme?.lowercased(), s == "http" || s == "https" {
+            return (url, nil)
+        }
+        return nil
+    }
+}

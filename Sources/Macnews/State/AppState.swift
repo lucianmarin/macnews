@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 import AppKit
+import WidgetKit
+@_exported import MacnewsCore
 
 @MainActor
 public final class AppState: ObservableObject {
@@ -38,7 +40,14 @@ public final class AppState: ObservableObject {
     ) {
         self.defaults = defaults
         let envBaseURL = ProcessInfo.processInfo.environment["MACNEWS_API_URL"]
-        let savedBaseURL = envBaseURL ?? defaults.string(forKey: StorageKeys.apiBaseURL) ?? APIClient.defaultBaseURL
+        let savedBaseURL: String
+        if let envBaseURL {
+            savedBaseURL = envBaseURL
+        } else if defaults === UserDefaults.standard {
+            savedBaseURL = SharedWidgetStorage.loadAPIBaseURL(fallbackDefaults: defaults)
+        } else {
+            savedBaseURL = defaults.string(forKey: StorageKeys.apiBaseURL) ?? APIClient.defaultBaseURL
+        }
         let normalizedBaseURL = APIClient.normalizeBaseURL(savedBaseURL)
         self.apiBaseURL = normalizedBaseURL
 
@@ -72,8 +81,7 @@ public final class AppState: ObservableObject {
     /// Odd news rows (1st, 3rd, 5th... in 1-based display order, i.e. 0-based `index % 2 == 0`)
     /// are highlighted, and even rows (2nd, 4th, 6th... i.e. `index % 2 == 1`) are not.
     public nonisolated static func isOddRowHighlighted(at zeroBasedIndex: Int) -> Bool {
-        let oneBasedRowNumber = zeroBasedIndex + 1
-        return oneBasedRowNumber % 2 == 1
+        NewsColors.isOddRowHighlighted(at: zeroBasedIndex)
     }
 
     public func selectTab(_ tab: FeedTab) {
@@ -114,6 +122,10 @@ public final class AppState: ObservableObject {
         let normalized = APIClient.normalizeBaseURL(newURL)
         self.apiBaseURL = normalized
         defaults.set(normalized, forKey: StorageKeys.apiBaseURL)
+        if defaults === UserDefaults.standard {
+            SharedWidgetStorage.saveAPIBaseURL(normalized)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         Task {
             await apiClient.setBaseURL(normalized)
             feedRefreshTrigger = UUID()
@@ -148,6 +160,17 @@ public final class AppState: ObservableObject {
         }
     }
 
+    public func handleIncomingURL(_ url: URL) {
+        guard let parsed = WidgetDeepLink.parseArticleURL(from: url) else {
+            return
+        }
+        markArticleVisited(parsed.articleURL.absoluteString)
+        if let site = parsed.site, !site.isEmpty {
+            markSiteVisited(site)
+        }
+        NSWorkspace.shared.open(parsed.articleURL)
+    }
+
     public func loadFeed(reset: Bool) async {
         if reset {
             isLoading = true
@@ -177,6 +200,10 @@ public final class AppState: ObservableObject {
 
             if reset {
                 entries = response.entries
+                if activeTab == .hot, activeSite == nil, defaults === UserDefaults.standard {
+                    SharedWidgetStorage.saveCachedHotEntries(response.entries)
+                    WidgetCenter.shared.reloadTimelines(ofKind: "com.lucianmarin.macnews.widget.hottest")
+                }
             } else {
                 let existingIDs = Set(entries.map(\.id))
                 let newUnique = response.entries.filter { !existingIDs.contains($0.id) }

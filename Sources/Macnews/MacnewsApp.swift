@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import MacnewsCore
 
 @main
 public struct MacnewsApp: App {
@@ -15,7 +16,11 @@ public struct MacnewsApp: App {
             MainNewsView()
                 .environmentObject(appState)
                 .tint(NewsTheme.accent)
+                .onOpenURL { url in
+                    appState.handleIncomingURL(url)
+                }
         }
+        .handlesExternalEvents(matching: [WidgetDeepLink.scheme])
         .windowToolbarStyle(.unified(showsTitle: false))
         .windowResizability(.contentSize)
         .defaultSize(

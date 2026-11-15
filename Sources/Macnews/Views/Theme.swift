@@ -1,64 +1,39 @@
 import SwiftUI
 import AppKit
+import MacnewsCore
 
 public enum NewsTheme {
     /// Hotnews `orangered` accent color (`#FF4500` / `rgb(255, 69, 0)`)
-    public static let accent = Color(red: 1.0, green: 69.0 / 255.0, blue: 0.0)
+    public static let accent = NewsColors.accent
 
     /// Website `--white`: `#FFFFFF` (Light) / `#000000` (Dark)
-    public static let background = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark ? .black : .white
-    }))
+    public static let background = NewsColors.background
 
     /// Highlighted background for odd news rows (1st, 3rd, 5th...):
     /// Website `--whitesmoke`: `#F0F0F0` (Light) / `#141414` (Dark)
-    public static let oddRowBackground = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark
-            ? NSColor(srgbRed: 0x14 / 255.0, green: 0x14 / 255.0, blue: 0x14 / 255.0, alpha: 1.0)
-            : NSColor(srgbRed: 0xF0 / 255.0, green: 0xF0 / 255.0, blue: 0xF0 / 255.0, alpha: 1.0)
-    }))
+    public static let oddRowBackground = NewsColors.oddRowBackground
 
     /// Unhighlighted background for even news rows (2nd, 4th, 6th...):
     /// Website `--white`: `#FFFFFF` (Light) / `#000000` (Dark)
-    public static let evenRowBackground = background
+    public static let evenRowBackground = NewsColors.evenRowBackground
 
     /// Website `--gainsboro`: `#E0E0E0` (Light) / `#242424` (Dark)
-    public static let gainsboro = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark
-            ? NSColor(srgbRed: 0x24 / 255.0, green: 0x24 / 255.0, blue: 0x24 / 255.0, alpha: 1.0)
-            : NSColor(srgbRed: 0xE0 / 255.0, green: 0xE0 / 255.0, blue: 0xE0 / 255.0, alpha: 1.0)
-    }))
+    public static let gainsboro = NewsColors.gainsboro
 
     /// Website `--silver`: `#C0C0C0` (Light) / `#404040` (Dark)
-    public static let silver = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark
-            ? NSColor(srgbRed: 0x40 / 255.0, green: 0x40 / 255.0, blue: 0x40 / 255.0, alpha: 1.0)
-            : NSColor(srgbRed: 0xC0 / 255.0, green: 0xC0 / 255.0, blue: 0xC0 / 255.0, alpha: 1.0)
-    }))
+    public static let silver = NewsColors.silver
 
     /// Website `--gray`: `#808080`
-    public static let gray = Color(nsColor: NSColor(srgbRed: 0x80 / 255.0, green: 0x80 / 255.0, blue: 0x80 / 255.0, alpha: 1.0))
+    public static let gray = NewsColors.gray
 
     /// Website `--darkgray`: `#404040` (Light) / `#C0C0C0` (Dark)
-    public static let darkGray = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark
-            ? NSColor(srgbRed: 0xC0 / 255.0, green: 0xC0 / 255.0, blue: 0xC0 / 255.0, alpha: 1.0)
-            : NSColor(srgbRed: 0x40 / 255.0, green: 0x40 / 255.0, blue: 0x40 / 255.0, alpha: 1.0)
-    }))
+    public static let darkGray = NewsColors.darkGray
 
     /// Website `--darkgray` (visited links): `#404040` (Light) / `#C0C0C0` (Dark)
-    public static let visitedText = darkGray
+    public static let visitedText = NewsColors.visitedText
 
     /// Website `--black`: `#000000` (Light) / `#FFFFFF` (Dark)
-    public static let primaryText = Color(nsColor: NSColor(name: nil, dynamicProvider: { appearance in
-        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-        return isDark ? .white : .black
-    }))
+    public static let primaryText = NewsColors.primaryText
 
     public static let maxReadingWidth: CGFloat = 520
     public static let horizontalPadding: CGFloat = 20
