@@ -340,7 +340,7 @@ struct MacnewsTests {
         let entry = await HotnewsTimelineProvider.loadEntry(apiClient: client)
 
         #expect(recorder.paths == ["/api/hot"])
-        #expect(HotnewsTimelineProvider.refreshIntervalSeconds == 3600)
+        #expect(HotnewsTimelineProvider.refreshIntervalSeconds == 1800)
         #expect(entry.errorMessage == nil)
         #expect(entry.entries.count == 2)
         #expect(entry.entries[0].siteLabel == "macrumors")

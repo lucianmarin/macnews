@@ -108,7 +108,7 @@ public struct HotnewsWidgetEntry: TimelineEntry, Sendable {
 public struct HotnewsTimelineProvider: TimelineProvider, Sendable {
     public typealias Entry = HotnewsWidgetEntry
 
-    public static let refreshIntervalSeconds: TimeInterval = 60 * 60
+    public static let refreshIntervalSeconds: TimeInterval = 30 * 60
     public static let retryIntervalSeconds: TimeInterval = 5 * 60
 
     public init() {}
