@@ -20,7 +20,7 @@ Native macOS client for [Hotnews](https://news.lucianmarin.com) (`news.lucianmar
   - [x] Supports 3 widget sizes: **Small** (`.systemSmall`), **Medium** (`.systemMedium`), and **Large** (`.systemLarge`).
   - [x] Fetches only the **Hottest** feed (`/api/hot`) via `HotnewsTimelineProvider` (refreshing every 30 minutes).
   - [x] Displays the status line (`site`, `age ago`, `score°` in `#FF4500`) and article title below without description, dynamically fitting as many stories as fit in Small, Medium, and Large sizes.
-  - [x] Deep-links widget story clicks back into `Hotnews.app` via `hotnews://open?url=...`.
+  - [x] Deep-links widget story clicks into the app's site view (`/api/{site}`) via `hotnews://site?name=...`.
 - [x] **macOS App Scaffolding & Icon**:
   - [x] Swift Package (`Package.swift`) targeting macOS 14+ with `Macnews` executable and `MacnewsTests` test suite.
   - [x] `Makefile` to build and bundle `Hotnews.app` with `AppIcon.icns`.

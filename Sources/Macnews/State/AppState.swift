@@ -161,14 +161,11 @@ public final class AppState: ObservableObject {
     }
 
     public func handleIncomingURL(_ url: URL) {
-        guard let parsed = WidgetDeepLink.parseArticleURL(from: url) else {
+        guard let site = WidgetDeepLink.parseSite(from: url) else {
             return
         }
-        markArticleVisited(parsed.articleURL.absoluteString)
-        if let site = parsed.site, !site.isEmpty {
-            markSiteVisited(site)
-        }
-        NSWorkspace.shared.open(parsed.articleURL)
+        selectSite(site)
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
 
     public func loadFeed(reset: Bool) async {

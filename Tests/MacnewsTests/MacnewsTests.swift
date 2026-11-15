@@ -349,7 +349,7 @@ struct MacnewsTests {
         #expect(entry.entries[0].title == "Hottest Story One")
     }
 
-    @Test("Widget deep links round-trip and mark articles visited")
+    @Test("Widget deep links round-trip and open site view in AppState")
     @MainActor
     func testWidgetDeepLinkHandling() throws {
         let sample = NewsEntry(
@@ -362,16 +362,23 @@ struct MacnewsTests {
             age: "2h",
             score: 0.079
         )
-        let deepLink = try #require(WidgetDeepLink.makeArticleURL(for: sample))
+        let deepLink = try #require(WidgetDeepLink.makeSiteURL(for: sample))
         #expect(deepLink.scheme == "hotnews")
-        #expect(deepLink.host == "open")
+        #expect(deepLink.host == "site")
 
-        let parsed = try #require(WidgetDeepLink.parseArticleURL(from: deepLink))
-        #expect(parsed.articleURL.absoluteString == sample.url)
-        #expect(parsed.site == "macrumors")
+        #expect(WidgetDeepLink.parseSite(from: deepLink) == "macrumors")
+        #expect(WidgetDeepLink.parseSite(from: URL(string: "hotnews://open?url=https://macrumors.com/a&site=macrumors")!) == "macrumors")
+        #expect(WidgetDeepLink.parseSite(from: URL(string: "https://macrumors.com/a")!) == nil)
 
-        let invalid = URL(string: "hotnews://open?url=javascript:alert(1)")!
-        #expect(WidgetDeepLink.parseArticleURL(from: invalid) == nil)
+        let suiteName = "macnews.deeplink.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let state = AppState(defaults: defaults)
+        state.handleIncomingURL(deepLink)
+        #expect(state.selectedSite == "macrumors")
+        #expect(state.isSiteVisited("macrumors") == true)
+        #expect(state.isArticleVisited(sample.url) == false)
     }
 
     @Test("Widget renders small, medium, and large sizes fitting more stories as size increases")

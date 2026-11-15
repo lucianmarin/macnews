@@ -9,10 +9,11 @@ public struct MacnewsApp: App {
     public init() {
         NSApplication.shared.setActivationPolicy(.regular)
         NSApplication.shared.applicationIconImage = AppIcon.loadOrRenderImage()
+        NSWindow.allowsAutomaticWindowTabbing = false
     }
 
     public var body: some Scene {
-        WindowGroup("Hotnews") {
+        Window("Hotnews", id: "main") {
             MainNewsView()
                 .environmentObject(appState)
                 .tint(NewsTheme.accent)
@@ -28,6 +29,8 @@ public struct MacnewsApp: App {
             height: NewsTheme.defaultWindowHeight
         )
         .commands {
+            CommandGroup(replacing: .newItem) {}
+
             CommandGroup(replacing: .appSettings) {
                 Button("API Server...") {
                     appState.isShowingSettings = true

@@ -406,7 +406,7 @@ public struct HotnewsWidgetEntryView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .widgetURL(family == .systemSmall ? displayEntries.first.flatMap(WidgetDeepLink.makeArticleURL(for:)) : nil)
+        .widgetURL(family == .systemSmall ? displayEntries.first.flatMap(WidgetDeepLink.makeSiteURL(for:)) : nil)
         .containerBackground(for: .widget) {
             if renderingMode == .fullColor {
                 NewsColors.background
@@ -450,7 +450,7 @@ public struct HotnewsWidgetEntryView: View {
             family: family,
             maxLinesOverride: maxLinesOverride
         )
-        if family != .systemSmall, let url = WidgetDeepLink.makeArticleURL(for: entry) {
+        if family != .systemSmall, let url = WidgetDeepLink.makeSiteURL(for: entry) {
             Link(destination: url) {
                 row
             }
